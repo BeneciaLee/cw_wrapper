@@ -1,3 +1,4 @@
+import time
 import chipwhisperer as cw
 import numpy as np
 from typing import Union, Optional
@@ -34,6 +35,14 @@ class SSTargetBase:
         if len(self.tx_history) >= self.__history_size:
             self.tx_history.pop(-1)
         self.tx_history.insert(0, x)
+        pass
+
+    def reset_using_nRST_pin(self, duration=0.1):
+        # Using_nRST_pin (in 20-pin connector between capture_board and target_board)
+        assert 0.05 <= duration <= 10
+        self._scope.advancedSettings.cwEXTRA.setGPIOStatenrst(0)
+        time.sleep(duration)
+        self._scope.advancedSettings.cwEXTRA.setGPIOStatenrst(1)
         pass
 
     def _serial_raw_write(self,
