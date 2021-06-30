@@ -9,19 +9,20 @@ scope = CWScope()
 scope.connect(ss_version="1.1")
 
 # Programming target
-scope.program_target("./test-CW303.hex", "XMEGA", reset_target_after_programming=True)
+# scope.program_target("./test-CW303.hex", "XMEGA", reset_target_after_programming=True)
 
 # Getting SimpleSerial object and printing commands
 dut: SSTargetBase = scope.get_simple_serial_target()
+scope.reset_target_nRST()
 dut.print_simpleserial_commsnds()
-
-# Initializing measurement parameters
-total_trace = 100
-samples = scope.get_status(verbose=False)["samples"]
 
 # Key setting
 fixed_key = "2AEF4FBF1020489FFD01F8369D353698"
 dut.ss_write("k", fixed_key, ack=True)
+
+# Initializing measurement parameters
+total_trace = 100
+samples = scope.get_status(verbose=False)["samples"]
 
 # Allocating placeholders
 traces = np.empty(shape=(total_trace, samples), dtype=np.float64)
