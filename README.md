@@ -7,3 +7,6 @@ Specifically, it contains abstract classes for scope and SimpleSerial protocols.
 * [chipwhisperer](https://github.com/newaetech/chipwhisperer)
 * numpy
 * matplotlib
+
+## Demo
+Demo script is available [here](https://github.com/noeyheadb/cw_wrapper/blob/master/demo.py).
