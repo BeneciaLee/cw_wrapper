@@ -8,5 +8,6 @@ It contains abstract classes for scope and SimpleSerial protocols.
 * numpy
 * matplotlib
 
-## Demo
-Demo script is available [here](https://github.com/noeyheadb/cw_wrapper/blob/master/demo.py).
+## Usage
+The demo script is available [here](https://github.com/noeyheadb/cw_wrapper/blob/master/demo.py).
+(requires [tqdm](https://github.com/tqdm/tqdm) package.)
