@@ -7,7 +7,7 @@ from typing import Union, Optional
 class SSTargetBase:
     def __init__(self, scope, target):
         self._scope: cw.capture.scopes.OpenADC = scope
-        self._target: cw.targets.SimpleSerial = target
+        self._target: Union[cw.targets.SimpleSerial, cw.targets.SimpleSerial2] = target
         self.rx_history = list()
         self.tx_history = list()
         self.__history_size = 5
