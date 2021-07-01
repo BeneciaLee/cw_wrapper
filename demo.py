@@ -1,3 +1,4 @@
+import time
 import numpy as np
 from tqdm.autonotebook import tqdm
 from scope import CWScope
@@ -14,6 +15,7 @@ scope.connect(ss_version="1.1")
 # Getting SimpleSerial object and printing commands
 dut: SSTargetBase = scope.get_simple_serial_target()
 scope.reset_target_nRST()
+time.sleep(1.5)
 dut.print_simpleserial_commsnds()
 
 # Key setting
