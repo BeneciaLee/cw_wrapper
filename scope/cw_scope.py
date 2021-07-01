@@ -3,7 +3,7 @@ import os
 import time
 import chipwhisperer as cw
 import numpy as np
-from typing import Optional, Dict
+from typing import Optional, Dict, Union
 from chipwhisperer.capture import scopes
 from simpleserial_target import *
 
@@ -13,7 +13,7 @@ class CWScope:
         self._scope: Optional[cw.capture.scopes.OpenADC] = None
         self._target: Optional[cw.targets.SimpleSerial] = None
         self._ss_version: Optional[str] = None
-        self._ss_target: Optional[SSTargetBase] = None
+        self._ss_target: Optional[Union[SS1xTarget, SS2xTarget]] = None
         self._prev_setting: dict = {}
         pass
 
@@ -138,15 +138,15 @@ class CWScope:
     def get_last_trig_cnt(self) -> int:
         return self._scope.adc.trig_count
 
-    def print_scope_status(self):
+    def print_scope_status(self) -> None:
         print(self._scope)
         pass
 
-    def print_target_status(self):
+    def print_target_status(self) -> None:
         print(self._target)
         pass
 
-    def get_simple_serial_target(self) -> SSTargetBase:
+    def get_simple_serial_target(self) -> Union[SS1xTarget, SS2xTarget]:
         return self._ss_target
 
     def arm(self) -> None:

@@ -2,7 +2,7 @@ import time
 import numpy as np
 from tqdm.autonotebook import tqdm
 from scope import CWScope
-from simpleserial_target import SSTargetBase
+from simpleserial_target import SS1xTarget
 from utils import make_random_hex
 
 # Connecting ChipWhisperer scope and target
@@ -13,7 +13,7 @@ scope.connect(ss_version="1.1")
 # scope.program_target("./test-CW303.hex", "XMEGA", reset_target_after_programming=True)
 
 # Getting SimpleSerial object and printing commands
-dut: SSTargetBase = scope.get_simple_serial_target()
+dut: SS1xTarget = scope.get_simple_serial_target()
 scope.reset_target_nRST()
 time.sleep(1.5)
 dut.print_simpleserial_commsnds()

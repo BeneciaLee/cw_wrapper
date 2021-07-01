@@ -15,7 +15,6 @@ class SS1xTarget(SSTargetBase):
                  timeout: int = 500
                  ) -> bool:
         assert len(cmd) == 1, "The length of 'cmd' must be 1."
-
         if data is None:
             data = bytearray()
         if type(data) is not bytearray:
@@ -32,7 +31,6 @@ class SS1xTarget(SSTargetBase):
         assert len(cmd) == 1, "The length of 'cmd' must be 1."
         assert 1 <= length <= 64
         buf: bytearray = self._target.simpleserial_read(cmd, length, ack=True, timeout=timeout)
-        # assert buf is not None
         if buf is None:
             return None
         buf_str = buf.hex().upper().strip()
