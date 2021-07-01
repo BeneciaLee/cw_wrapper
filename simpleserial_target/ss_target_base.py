@@ -66,7 +66,7 @@ class SSTargetBase:
     def ss_write(self,
                  cmd: str,
                  data: Optional[Union[bytearray, str, np.str_]],
-                 ack: bool = True,
+                 following_ack: bool = True,
                  timeout: int = 500
                  ) -> bool:
         pass
@@ -74,6 +74,7 @@ class SSTargetBase:
     def ss_read(self,
                 cmd: str,
                 length: int,
+                following_ack: bool = True,
                 timeout: int = 500
                 ) -> Optional[str]:
         pass

@@ -11,7 +11,7 @@ class SS1xTarget(SSTargetBase):
     def ss_write(self,
                  cmd: str,
                  data: Optional[Union[bytearray, str, np.str_]],
-                 ack: bool = True,
+                 following_ack: bool = True,
                  timeout: int = 500
                  ) -> bool:
         assert len(cmd) == 1, "The length of 'cmd' must be 1."
@@ -21,16 +21,17 @@ class SS1xTarget(SSTargetBase):
             data = bytearray.fromhex(data.strip())
         cmd += binascii.hexlify(data).decode()
         cmd += "\n"
-        return self._serial_raw_write(cmd, ack, timeout)
+        return self._serial_raw_write(cmd, following_ack, timeout)
 
     def ss_read(self,
                 cmd: str,
                 length: int,
+                following_ack: bool = True,
                 timeout: int = 500
                 ) -> Optional[str]:
         assert len(cmd) == 1, "The length of 'cmd' must be 1."
         assert 1 <= length <= 64
-        buf: bytearray = self._target.simpleserial_read(cmd, length, ack=True, timeout=timeout)
+        buf: bytearray = self._target.simpleserial_read(cmd, length, ack=following_ack, timeout=timeout)
         if buf is None:
             return None
         buf_str = buf.hex().upper().strip()
