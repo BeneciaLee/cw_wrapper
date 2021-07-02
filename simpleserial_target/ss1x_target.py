@@ -60,9 +60,12 @@ class SS1xTarget(SSTargetBase):
         buf = self._serial_raw_read(length * 2 + 1 + 1)
         if buf is None:
             return None
-        if buf[0] != cmd or not buf.endswith("\n"):
+        if not buf.endswith("\n"):
             print(f"Invalid SimpleSerial response packet format detected. (received: " + buf.replace("\n", "\\n") + ")",
                   file=sys.stderr)
+            return None
+        if buf[0] != cmd:
+            print(f"Unexpected response command detected. (expected: '{cmd}', received: '{buf[0]}')", file=sys.stderr)
             return None
         try:
             for i in range(1, length * 2 + 1, 2):
