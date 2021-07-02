@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 import binascii
 from .ss_target_base import SSTargetBase
@@ -8,6 +9,26 @@ class SS1xTarget(SSTargetBase):
     """
     ChipWhisperer SimpleSerial v1.1 target
     """
+    def ss_wait_ack(self, timeout: int = 500) -> bool:
+        ack_payload = self._serial_raw_read(4)
+        if ack_payload is None:
+            print(f"Target did not ack.", file=sys.stderr)
+            return False
+        if ack_payload[0] != 'z' or not ack_payload.endswith("\n") or len(ack_payload) < 4:
+            print(f"Invalid ACK packet format detected. (received: " + ack_payload.replace("\n", "\\n") + ")",
+                  file=sys.stderr)
+            return False
+        try:
+            ret = int(ack_payload[1:3], 16)
+        except ValueError:
+            print(f"Invalid ACK packet format detected. (received: " + ack_payload.replace("\n", "\\n") + ")",
+                  file=sys.stderr)
+            return False
+        if ret != 0:
+            print(f"The error code was passed through an ACK packet. (0x{ret:02X})", file=sys.stderr)
+            return False
+        return True
+
     def ss_write(self,
                  cmd: str,
                  data: Optional[Union[bytearray, str, np.str_]],
@@ -19,9 +40,14 @@ class SS1xTarget(SSTargetBase):
             data = bytearray()
         if type(data) is not bytearray:
             data = bytearray.fromhex(data.strip())
-        cmd += binascii.hexlify(data).decode()
+        cmd += binascii.hexlify(data).decode().upper()
         cmd += "\n"
-        return self._serial_raw_write(cmd, following_ack, timeout)
+        if self._serial_raw_write(cmd) is False:
+            return False
+        if following_ack:
+            if self.ss_wait_ack(timeout) is False:
+                return False
+        return True
 
     def ss_read(self,
                 cmd: str,
@@ -31,10 +57,20 @@ class SS1xTarget(SSTargetBase):
                 ) -> Optional[str]:
         assert len(cmd) == 1, "The length of 'cmd' must be 1."
         assert 1 <= length <= 64
-        buf: bytearray = self._target.simpleserial_read(cmd, length, ack=following_ack, timeout=timeout)
+        buf = self._serial_raw_read(length * 2 + 1 + 1)
         if buf is None:
             return None
-        buf_str = buf.hex().upper().strip()
-        self._update_rx_history(f"{cmd}{buf_str}\n")
-        return buf_str
+        if buf[0] != cmd or not buf.endswith("\n"):
+            print(f"Invalid SimpleSerial response packet format detected. (received: " + buf.replace("\n", "\\n") + ")",
+                  file=sys.stderr)
+            return None
+        try:
+            for i in range(1, length * 2 + 1, 2):
+                _ = int(buf[i:i+2], 16)
+        except ValueError:
+            print(f"Invalid hexadecimal str was detected in the SimpleSerial response packet.", file=sys.stderr)
+            return None
+        if following_ack:
+            self.ss_wait_ack(timeout)
+        return buf[1:2*length+1]
     pass
