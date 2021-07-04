@@ -2,7 +2,7 @@ import sys
 import chipwhisperer as cw
 import numpy as np
 from typing import Union, Optional
-from ..scope.common import reset_target_via_VCC, reset_target_via_nRST
+from scope.common import reset_target_via_VCC, reset_target_via_nRST
 
 
 class SSTargetBase:
