@@ -14,7 +14,7 @@ scope.connect(ss_version="1.1")
 
 # Getting SimpleSerial object and printing commands
 dut: SS1xTarget = scope.get_simple_serial_target()
-scope.reset_target_using_nRST()
+scope.reset_target_via_nRST()  # scope.reset_target_via_VCC()
 time.sleep(1)
 dut.print_simpleserial_commsnds()
 

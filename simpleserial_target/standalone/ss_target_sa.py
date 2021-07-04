@@ -35,7 +35,7 @@ class SSTargetStandAlone(SSTargetBase):
             programmer = cw.programmers.STM32FProgrammer
         cw.program_target(self._scope, programmer, dot_hex_path)
         if reset_target_after_programming:
-            self.reset_using_nRST_pin()
+            self.reset_via_nRST()
         pass
     pass
 

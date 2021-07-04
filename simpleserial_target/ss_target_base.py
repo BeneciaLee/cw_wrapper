@@ -26,24 +26,46 @@ class SSTargetBase:
     def get_in_waiting(self) -> dict:
         return {"rx": self._target.in_waiting(), "tx": self._target.in_waiting_tx()}
 
-    def _update_rx_history(self, x: str):
+    def _update_rx_history(self, x: str) -> None:
         if len(self.rx_history) >= self.__history_size:
             self.rx_history.pop(-1)
         self.rx_history.insert(0, x)
         pass
 
-    def _update_tx_history(self, x: str):
+    def _update_tx_history(self, x: str) -> None:
         if len(self.tx_history) >= self.__history_size:
             self.tx_history.pop(-1)
         self.tx_history.insert(0, x)
         pass
 
-    def reset_using_nRST_pin(self, duration=0.1):
-        # Using_nRST_pin (in 20-pin connector between capture_board and target_board)
+    def reset_via_nRST(self, duration=0.1) -> None:
+        """
+        This method is used to reset the UFO target board mounted on the CW308 via nRST pin.
+        When using nRST pin, unlike using VCC pin, the power supplied to the CW308 is maintained
+        and only the power supply of the UFO target board is cut off.
+
+        :param duration: Power-down period
+        :return: None
+        """
         assert 0.05 <= duration <= 10
         self._scope.advancedSettings.cwEXTRA.setGPIOStatenrst(0)
         time.sleep(duration)
         self._scope.advancedSettings.cwEXTRA.setGPIOStatenrst(None)
+        pass
+
+    def reset_via_VCC(self, duration=0.1) -> None:
+        """
+        This method is used to reset the target board via VCC pin.
+        When using VCC pin, unlike using nRST pin, the power supplied from the capture board
+        to the target board is cut off.
+
+        :param duration: Power-down period
+        :return: None
+        """
+        assert 0.05 <= duration <= 10
+        self._scope.advancedSettings.cwEXTRA.setTargetPowerState(False)
+        time.sleep(duration)
+        self._scope.advancedSettings.cwEXTRA.setTargetPowerState(True)
         pass
 
     def flush_recv_buf(self):

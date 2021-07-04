@@ -174,14 +174,36 @@ class CWScope:
             programmer = cw.programmers.STM32FProgrammer
         cw.program_target(self._scope, programmer, dot_hex_path)
         if reset_target_after_programming:
-            self.reset_target_using_nRST()
+            self.reset_target_via_nRST()
         pass
 
-    def reset_target_using_nRST(self, duration=0.1):
-        # Using_nRST_pin (in 20-pin connector between capture_board and target_board)
+    def reset_target_via_nRST(self, duration=0.1) -> None:
+        """
+        This method is used to reset the UFO target board mounted on the CW308 via nRST pin.
+        When using nRST pin, unlike using VCC pin, the power supplied to the CW308 is maintained
+        and only the power supply of the UFO target board is cut off.
+
+        :param duration: Power-down period
+        :return: None
+        """
         assert 0.05 <= duration <= 10
         self._scope.advancedSettings.cwEXTRA.setGPIOStatenrst(0)
         time.sleep(duration)
         self._scope.advancedSettings.cwEXTRA.setGPIOStatenrst(None)
+        pass
+
+    def reset_target_via_VCC(self, duration=0.1) -> None:
+        """
+        This method is used to reset the target board via VCC pin.
+        When using VCC pin, unlike using nRST pin, the power supplied from the capture board
+        to the target board is cut off.
+
+        :param duration: Power-down period
+        :return: None
+        """
+        assert 0.05 <= duration <= 10
+        self._scope.advancedSettings.cwEXTRA.setTargetPowerState(False)
+        time.sleep(duration)
+        self._scope.advancedSettings.cwEXTRA.setTargetPowerState(True)
         pass
     pass
