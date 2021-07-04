@@ -1,7 +1,9 @@
 import time
 import numpy as np
 from tqdm.autonotebook import tqdm
-from cw_wrapper import CWScope, SS1xTarget, make_random_hex
+from scope import CWScope
+from simpleserial_target import SS1xTarget
+from utils import make_random_hex
 
 # Connecting ChipWhisperer scope and target
 scope = CWScope()

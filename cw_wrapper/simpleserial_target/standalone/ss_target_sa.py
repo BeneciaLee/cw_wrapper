@@ -1,7 +1,5 @@
 import chipwhisperer as cw
-from ..ss_target_base import SSTargetBase
-from ..ss1x_target import SS1xTarget
-from ..ss2x_target import SS2xTarget
+from .. import SSTargetBase, SS1xTarget, SS2xTarget
 from ...scope.common import programming_target
 
 

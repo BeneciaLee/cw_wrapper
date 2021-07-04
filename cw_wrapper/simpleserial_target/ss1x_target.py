@@ -1,8 +1,8 @@
 import sys
 import numpy as np
 import binascii
-from typing import Union, Optional
 from .ss_target_base import SSTargetBase
+from typing import Union, Optional
 
 
 class SS1xTarget(SSTargetBase):

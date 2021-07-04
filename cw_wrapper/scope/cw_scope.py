@@ -3,7 +3,7 @@ import chipwhisperer as cw
 import numpy as np
 from typing import Optional, Dict, Union
 from chipwhisperer.capture import scopes
-from ..simpleserial_target import SS1xTarget, SS2xTarget
+from simpleserial_target import *
 from .common import reset_target_via_VCC, reset_target_via_nRST, programming_target
 
 
