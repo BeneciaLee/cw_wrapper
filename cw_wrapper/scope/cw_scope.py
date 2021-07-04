@@ -4,7 +4,7 @@ import numpy as np
 from typing import Optional, Dict, Union
 from chipwhisperer.capture import scopes
 from ..simpleserial_target import SS1xTarget, SS2xTarget
-from .common import reset_target_via_VCC, reset_target_via_nRST, programming_target
+from .common import reset_target_via_VCC, reset_target_via_UFO_nRST, programming_target
 
 
 class CWScope:
@@ -167,8 +167,8 @@ class CWScope:
         programming_target(self._scope, dot_hex_path, programmer_type, reset_target_after_programming)
         pass
 
-    def reset_target_via_nRST(self, duration=0.1) -> None:
-        reset_target_via_nRST(self._scope, duration)
+    def reset_target_via_UFO_nRST(self, duration=0.1) -> None:
+        reset_target_via_UFO_nRST(self._scope, duration)
         pass
 
     def reset_target_via_VCC(self, duration=0.1) -> None:

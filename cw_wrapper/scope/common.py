@@ -22,7 +22,7 @@ def programming_target(scope,
     pass
 
 
-def reset_target_via_nRST(scope, duration=0.1) -> None:
+def reset_target_via_UFO_nRST(scope, duration=0.1) -> None:
     """
     This method is used to reset the UFO target board mounted on the CW308 via nRST pin.
     When using nRST pin, unlike using VCC pin, the power supplied to the CW308 is maintained

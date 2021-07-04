@@ -2,7 +2,7 @@ import sys
 import chipwhisperer as cw
 import numpy as np
 from typing import Union, Optional
-from ..scope.common import reset_target_via_VCC, reset_target_via_nRST
+from ..scope.common import reset_target_via_VCC, reset_target_via_UFO_nRST
 
 
 class SSTargetBase:
@@ -38,8 +38,8 @@ class SSTargetBase:
         self.tx_history.insert(0, x)
         pass
 
-    def reset_via_nRST(self, duration=0.1) -> None:
-        reset_target_via_nRST(self._scope, duration)
+    def reset_via_UFO_nRST(self, duration=0.1) -> None:
+        reset_target_via_UFO_nRST(self._scope, duration)
         pass
 
     def reset_via_VCC(self, duration=0.1) -> None:
