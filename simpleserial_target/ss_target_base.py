@@ -43,7 +43,7 @@ class SSTargetBase:
         assert 0.05 <= duration <= 10
         self._scope.advancedSettings.cwEXTRA.setGPIOStatenrst(0)
         time.sleep(duration)
-        self._scope.advancedSettings.cwEXTRA.setGPIOStatenrst(1)
+        self._scope.advancedSettings.cwEXTRA.setGPIOStatenrst(None)
         pass
 
     def flush_recv_buf(self):

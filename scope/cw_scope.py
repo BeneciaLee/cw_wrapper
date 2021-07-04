@@ -174,14 +174,14 @@ class CWScope:
             programmer = cw.programmers.STM32FProgrammer
         cw.program_target(self._scope, programmer, dot_hex_path)
         if reset_target_after_programming:
-            self.reset_target_nRST()
+            self.reset_target_using_nRST()
         pass
 
-    def reset_target_nRST(self, duration=0.1):
+    def reset_target_using_nRST(self, duration=0.1):
         # Using_nRST_pin (in 20-pin connector between capture_board and target_board)
         assert 0.05 <= duration <= 10
         self._scope.advancedSettings.cwEXTRA.setGPIOStatenrst(0)
         time.sleep(duration)
-        self._scope.advancedSettings.cwEXTRA.setGPIOStatenrst(1)
+        self._scope.advancedSettings.cwEXTRA.setGPIOStatenrst(None)
         pass
     pass
