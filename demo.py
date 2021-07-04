@@ -10,7 +10,7 @@ scope = CWScope()
 scope.connect(ss_version="1.1")
 
 # Programming target
-# scope.program_target("./test-CW303.hex", "XMEGA", reset_target_after_programming=True)
+# scope.programming_target("./test-CW303.hex", "XMEGA", reset_target_after_programming=True)
 
 # Getting SimpleSerial object and printing commands
 dut: SS1xTarget = scope.get_simple_serial_target()

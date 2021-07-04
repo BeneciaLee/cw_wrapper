@@ -1,6 +1,6 @@
-import os
 import chipwhisperer as cw
 from .. import SSTargetBase, SS1xTarget, SS2xTarget
+from ...scope.common import programming_target
 
 
 class SSTargetStandAlone(SSTargetBase):
@@ -21,21 +21,12 @@ class SSTargetStandAlone(SSTargetBase):
         self._target = None
         pass
 
-    def program_target(self,
-                       dot_hex_path: str,
-                       programmer_type: str,
-                       reset_target_after_programming: bool = True
-                       ) -> None:
-        assert programmer_type.lower() in ('xmega', 'stm32f'), \
-            f"'{dot_hex_path}' is unsupported programmer type. (Available: xmega, stm32f)"
-        assert os.path.exists(dot_hex_path), "The .hex file does not exist."
-        if programmer_type.lower() == "xmega":
-            programmer = cw.programmers.XMEGAProgrammer
-        else:
-            programmer = cw.programmers.STM32FProgrammer
-        cw.program_target(self._scope, programmer, dot_hex_path)
-        if reset_target_after_programming:
-            self.reset_via_nRST()
+    def programming_target(self,
+                           dot_hex_path: str,
+                           programmer_type: str,
+                           reset_target_after_programming: bool = True
+                           ) -> None:
+        programming_target(self._scope, dot_hex_path, programmer_type, reset_target_after_programming)
         pass
     pass
 

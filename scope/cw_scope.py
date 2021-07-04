@@ -1,11 +1,10 @@
 import sys
-import os
-import time
 import chipwhisperer as cw
 import numpy as np
 from typing import Optional, Dict, Union
 from chipwhisperer.capture import scopes
 from simpleserial_target import *
+from .common import reset_target_via_VCC, reset_target_via_nRST, programming_target
 
 
 class CWScope:
@@ -160,50 +159,19 @@ class CWScope:
             return None
         return self._scope.get_last_trace()
 
-    def program_target(self,
-                       dot_hex_path: str,
-                       programmer_type: str,
-                       reset_target_after_programming: bool = True
-                       ) -> None:
-        assert programmer_type.lower() in ('xmega', 'stm32f'), \
-            f"'{dot_hex_path}' is unsupported programmer type. (Available: xmega, stm32f)"
-        assert os.path.exists(dot_hex_path), "The .hex file does not exist."
-        if programmer_type.lower() == "xmega":
-            programmer = cw.programmers.XMEGAProgrammer
-        else:
-            programmer = cw.programmers.STM32FProgrammer
-        cw.program_target(self._scope, programmer, dot_hex_path)
-        if reset_target_after_programming:
-            self.reset_target_via_nRST()
+    def programming_target(self,
+                           dot_hex_path: str,
+                           programmer_type: str,
+                           reset_target_after_programming: bool = True
+                           ) -> None:
+        programming_target(self._scope, dot_hex_path, programmer_type, reset_target_after_programming)
         pass
 
     def reset_target_via_nRST(self, duration=0.1) -> None:
-        """
-        This method is used to reset the UFO target board mounted on the CW308 via nRST pin.
-        When using nRST pin, unlike using VCC pin, the power supplied to the CW308 is maintained
-        and only the power supply of the UFO target board is cut off.
-
-        :param duration: Power-down period
-        :return: None
-        """
-        assert 0.05 <= duration <= 10
-        self._scope.advancedSettings.cwEXTRA.setGPIOStatenrst(0)
-        time.sleep(duration)
-        self._scope.advancedSettings.cwEXTRA.setGPIOStatenrst(None)
+        reset_target_via_nRST(self._scope, duration)
         pass
 
     def reset_target_via_VCC(self, duration=0.1) -> None:
-        """
-        This method is used to reset the target board via VCC pin.
-        When using VCC pin, unlike using nRST pin, the power supplied from the capture board
-        to the target board is cut off.
-
-        :param duration: Power-down period
-        :return: None
-        """
-        assert 0.05 <= duration <= 10
-        self._scope.advancedSettings.cwEXTRA.setTargetPowerState(False)
-        time.sleep(duration)
-        self._scope.advancedSettings.cwEXTRA.setTargetPowerState(True)
+        reset_target_via_VCC(self._scope, duration)
         pass
     pass
