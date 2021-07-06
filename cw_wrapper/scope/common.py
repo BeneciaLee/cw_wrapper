@@ -18,7 +18,7 @@ def programming_target(scope,
         programmer = cw.programmers.STM32FProgrammer
     cw.program_target(scope, programmer, dot_hex_path)
     if reset_target_after_programming:
-        scope.reset_target_via_VCC()
+        reset_target_via_VCC(scope)
     pass
 
 
