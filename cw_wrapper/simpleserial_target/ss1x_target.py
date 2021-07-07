@@ -12,20 +12,20 @@ class SS1xTarget(SSTargetBase):
     def ss_wait_ack(self, timeout: int = 500) -> bool:
         ack_payload = self._serial_raw_read(4)
         if ack_payload is None:
-            print(f"Target did not ack.", file=sys.stderr)
+            print(f"[SS_ACK] Target did not ack.", file=sys.stderr)
             return False
         if ack_payload[0] != 'z' or not ack_payload.endswith("\n") or len(ack_payload) < 4:
-            print(f"Invalid ACK packet format detected. (received: " + ack_payload.replace("\n", "\\n") + ")",
+            print(f"[SS_ACK] Invalid ACK packet format detected. (received: " + ack_payload.replace("\n", "\\n") + ")",
                   file=sys.stderr)
             return False
         try:
             ret = int(ack_payload[1:3], 16)
         except ValueError:
-            print(f"Invalid ACK packet format detected. (received: " + ack_payload.replace("\n", "\\n") + ")",
+            print(f"[SS_ACK] Invalid ACK packet format detected. (received: " + ack_payload.replace("\n", "\\n") + ")",
                   file=sys.stderr)
             return False
         if ret != 0:
-            print(f"The error code was passed through an ACK packet. (0x{ret:02X})", file=sys.stderr)
+            print(f"[SS_ACK] The error code was passed through an ACK packet. (0x{ret:02X})", file=sys.stderr)
             return False
         return True
 
@@ -61,19 +61,23 @@ class SS1xTarget(SSTargetBase):
         if buf is None:
             return None
         if not buf.endswith("\n"):
-            print(f"Invalid SimpleSerial response packet format detected. (received: " + buf.replace("\n", "\\n") + ")",
-                  file=sys.stderr)
+            print(f"[SS_READ] Invalid SimpleSerial response packet format detected. (received: " +
+                  buf.replace("\n", "\\n") + ")", file=sys.stderr)
             return None
         if buf[0] != cmd:
-            print(f"Unexpected response command detected. (expected: '{cmd}', received: '{buf[0]}')", file=sys.stderr)
+            print(f"[SS_READ] Unexpected response command detected. (expected: '{cmd}', received: '{buf[0]}')",
+                  file=sys.stderr)
             return None
         try:
             for i in range(1, length * 2 + 1, 2):
                 _ = int(buf[i:i+2], 16)
         except ValueError:
-            print(f"Invalid hexadecimal str was detected in the SimpleSerial response packet.", file=sys.stderr)
+            print(f"[SS_READ] Invalid hexadecimal str was detected in the SimpleSerial response packet.",
+                  file=sys.stderr)
             return None
         if following_ack:
-            self.ss_wait_ack(timeout)
+            if not self.ss_wait_ack(timeout):
+                print(f"[SS_READ] Response '{buf}' received. But target did not ack.", file=sys.stderr)
+                return None
         return buf[1:2*length+1]
     pass

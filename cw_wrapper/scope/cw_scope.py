@@ -156,7 +156,7 @@ class CWScope:
     def get_waveform(self) -> Optional[np.ndarray]:
         ret = self._scope.capture()
         if ret:
-            print("Timeout happened during capture", file=sys.stderr)
+            print("[SCOPE] Timeout happened during capture", file=sys.stderr)
             return None
         return self._scope.get_last_trace()
 

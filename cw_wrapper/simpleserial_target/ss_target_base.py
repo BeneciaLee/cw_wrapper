@@ -123,10 +123,10 @@ class SSTargetBase:
         payload = self._target.read(payload_len, timeout)
         if payload == "":
             if print_warning_msg:
-                print("There is no data to receive from Target.", file=sys.stderr)
+                print("[RAW SERIAL] There is no data to receive from Target.", file=sys.stderr)
             return None
         if len(payload) < payload_len and print_warning_msg:
-            print(f"The data read from the target is less than expected. "
+            print(f"[RAW SERIAL] The data read from the target is less than expected. "
                   f"(expected: {payload_len}, received: {len(payload)})",
                   file=sys.stderr)
             self._update_rx_history(payload)
