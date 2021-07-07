@@ -40,7 +40,7 @@ class SSTargetBase:
         pass
 
     def reset_via_UFO_nRST(self,
-                           duration=0.1,
+                           duration: float = 0.5,
                            wait_for_ready: float = 0.1
                            ) -> None:
         """
@@ -62,7 +62,7 @@ class SSTargetBase:
         pass
 
     def reset_via_VCC(self,
-                      duration=0.1,
+                      duration: float = 0.5,
                       wait_for_ready: float = 0.1
                       ) -> None:
         """

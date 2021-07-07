@@ -170,11 +170,11 @@ class CWScope:
             self._ss_target.reset_via_VCC()
         pass
 
-    def reset_target_via_UFO_nRST(self, duration=0.1) -> None:
+    def reset_target_via_UFO_nRST(self, duration: float = 0.5) -> None:
         self._ss_target.reset_via_UFO_nRST(duration)
         pass
 
-    def reset_target_via_VCC(self, duration=0.1) -> None:
+    def reset_target_via_VCC(self, duration: float = 0.5) -> None:
         self._ss_target.reset_via_VCC(duration)
         pass
 

@@ -13,7 +13,7 @@ scope.connect(ss_version="1.1")
 # Getting SimpleSerial object and printing commands
 dut: SS1xTarget = scope.get_simple_serial_target()
 scope.reset_target_via_VCC()   # scope.reset_target_via_UFO_nRST()
-time.sleep(1)
+time.sleep(1)  # Wait for the target device to be ready
 dut.print_simpleserial_commsnds()
 
 # Key setting
@@ -21,7 +21,7 @@ fixed_key = "2AEF4FBF1020489FFD01F8369D353698"
 dut.ss_write("k", fixed_key, following_ack=True)
 
 # Initializing measurement parameters
-total_trace = 100
+total_trace = 500
 samples = scope.get_status(verbose=False)["samples"]
 
 # Allocating placeholders
@@ -37,9 +37,7 @@ while cnt < total_trace:
     dut.ss_write('p', p, following_ack=False)
     c = dut.ss_read('r', 16, following_ack=True)
     t = scope.get_waveform()
-    if t is None:
-        continue
-    if c is None:
+    if t is None or c is None:
         continue
     plains.append(p)
     ciphers.append(c)
