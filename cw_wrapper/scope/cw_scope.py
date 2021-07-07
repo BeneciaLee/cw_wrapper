@@ -180,7 +180,7 @@ class CWScope:
 
     def set_target_clock_freq(self,
                               freq: int = 7.37e6,
-                              wait_for_ready: float = 0.3,
+                              wait_for_ready: float = 0.5,
                               verbose: bool = True
                               ) -> None:
         assert 0 <= wait_for_ready <= 10
