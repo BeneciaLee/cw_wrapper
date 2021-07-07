@@ -2,6 +2,7 @@ import sys
 import chipwhisperer as cw
 import numpy as np
 from typing import Union, Optional
+from chipwhisperer.capture import scopes
 from ..scope.common import reset_target_via_VCC, reset_target_via_UFO_nRST
 
 
@@ -44,6 +45,13 @@ class SSTargetBase:
 
     def reset_via_VCC(self, duration=0.1) -> None:
         reset_target_via_VCC(self._scope, duration)
+        pass
+
+    def set_clock_freq(self, freq: int = 7.37e6) -> None:
+        assert 3.2e6 <= freq <= 25.0e6
+        self._scope.clock.clkgen_freq = freq
+        self._target.baud = round(38400 * (freq / 7.37e6))
+        self.reset_via_VCC()
         pass
 
     def flush_recv_buf(self):

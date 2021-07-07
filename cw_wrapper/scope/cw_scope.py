@@ -174,4 +174,10 @@ class CWScope:
     def reset_target_via_VCC(self, duration=0.1) -> None:
         reset_target_via_VCC(self._scope, duration)
         pass
+
+    def set_target_clock_freq(self, freq: int = 7.37e6) -> None:
+        saved_adc_src = self._scope.clock.adc_src
+        self._ss_target.set_clock_freq(freq)
+        self._scope.clock.adc_src = saved_adc_src
+        pass
     pass
