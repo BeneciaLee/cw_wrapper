@@ -39,41 +39,61 @@ class SSTargetBase:
         self.tx_history.insert(0, x)
         pass
 
-    def reset_via_UFO_nRST(self, duration=0.1) -> None:
+    def reset_via_UFO_nRST(self,
+                           duration=0.1,
+                           wait_for_ready: float = 0.1
+                           ) -> None:
         """
         This method is used to reset the UFO target board mounted on the CW308 via nRST pin.
         When using nRST pin, unlike using VCC pin, the power supplied to the CW308 is maintained
         and only the power supply of the UFO target board is cut off.
 
         :param duration: Power-down period
+        :param wait_for_ready: Time to wait for target to be ready after reset
         :return: None
         """
         assert 0.05 <= duration <= 10
+        assert 0 <= wait_for_ready <= 10
         self._scope.advancedSettings.cwEXTRA.setGPIOStatenrst(0)
         time.sleep(duration)
         self._scope.advancedSettings.cwEXTRA.setGPIOStatenrst(None)
+        if wait_for_ready > 0:
+            time.sleep(wait_for_ready)
         pass
 
-    def reset_via_VCC(self, duration=0.1) -> None:
+    def reset_via_VCC(self,
+                      duration=0.1,
+                      wait_for_ready: float = 0.1
+                      ) -> None:
         """
         This method is used to reset the target board via VCC pin.
         When using VCC pin, unlike using nRST pin, the power supplied from the capture board
         to the target board is cut off.
 
         :param duration: Power-down period
+        :param wait_for_ready: Time to wait for target to be ready after reset
         :return: None
         """
         assert 0.05 <= duration <= 10
+        assert 0 <= wait_for_ready <= 10
         self._scope.advancedSettings.cwEXTRA.setTargetPowerState(False)
         time.sleep(duration)
         self._scope.advancedSettings.cwEXTRA.setTargetPowerState(True)
+        if wait_for_ready > 0:
+            time.sleep(wait_for_ready)
         pass
 
-    def set_clock_freq(self, freq: int = 7.37e6) -> None:
+    def set_clock_freq(self,
+                       freq: int = 7.37e6,
+                       wait_for_ready: float = 0.1,
+                       verbose: bool = True
+                       ) -> None:
         assert 3.2e6 <= freq <= 25.0e6
         self._scope.clock.clkgen_freq = freq
         self._target.baud = round(38400 * (freq / 7.37e6))
-        self.reset_via_VCC()
+        self.reset_via_VCC(wait_for_ready=wait_for_ready)
+        if verbose:
+            print(f"Adjusted clock frequency: {int(self._scope.clock.clkgen_freq) * 1e-6:.4f}MHz")
         pass
 
     def flush_recv_buf(self):

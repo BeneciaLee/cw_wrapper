@@ -1,4 +1,6 @@
 import sys
+import time
+
 import chipwhisperer as cw
 import numpy as np
 from typing import Optional, Dict, Union
@@ -176,9 +178,18 @@ class CWScope:
         self._ss_target.reset_via_VCC(duration)
         pass
 
-    def set_target_clock_freq(self, freq: int = 7.37e6) -> None:
+    def set_target_clock_freq(self,
+                              freq: int = 7.37e6,
+                              wait_for_ready: float = 0.3,
+                              verbose: bool = True
+                              ) -> None:
+        assert 0 <= wait_for_ready <= 10
         saved_adc_src = self._scope.clock.adc_src
-        self._ss_target.set_clock_freq(freq)
+        self._ss_target.set_clock_freq(freq, wait_for_ready=0)
         self._scope.clock.adc_src = saved_adc_src
+        if wait_for_ready:
+            time.sleep(wait_for_ready)
+        if verbose:
+            print(f"Adjusted sampling rate: {int(self._scope.clock.adc_freq) * 1e-6:.4f}MS/s ({saved_adc_src})")
         pass
     pass
