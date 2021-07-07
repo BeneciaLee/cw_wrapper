@@ -3,8 +3,7 @@ import chipwhisperer as cw
 import numpy as np
 from typing import Optional, Dict, Union
 from chipwhisperer.capture import scopes
-from ..simpleserial_target import SS1xTarget, SS2xTarget
-from .common import reset_target_via_VCC, reset_target_via_UFO_nRST, programming_target
+from ..simpleserial_target import SS1xTarget, SS2xTarget, programming_target
 
 
 class CWScope:
@@ -164,15 +163,17 @@ class CWScope:
                            programmer_type: str,
                            reset_target_after_programming: bool = True
                            ) -> None:
-        programming_target(self._scope, dot_hex_path, programmer_type, reset_target_after_programming)
+        programming_target(self._scope, dot_hex_path, programmer_type)
+        if reset_target_after_programming:
+            self._ss_target.reset_via_VCC()
         pass
 
     def reset_target_via_UFO_nRST(self, duration=0.1) -> None:
-        reset_target_via_UFO_nRST(self._scope, duration)
+        self._ss_target.reset_via_UFO_nRST(duration)
         pass
 
     def reset_target_via_VCC(self, duration=0.1) -> None:
-        reset_target_via_VCC(self._scope, duration)
+        self._ss_target.reset_via_VCC(duration)
         pass
 
     def set_target_clock_freq(self, freq: int = 7.37e6) -> None:

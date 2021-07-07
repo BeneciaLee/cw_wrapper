@@ -2,7 +2,7 @@ import chipwhisperer as cw
 from ..ss_target_base import SSTargetBase
 from ..ss1x_target import SS1xTarget
 from ..ss2x_target import SS2xTarget
-from ...scope.common import programming_target
+from ..programming_target import programming_target
 
 
 class SSTargetStandAlone(SSTargetBase):
@@ -28,7 +28,9 @@ class SSTargetStandAlone(SSTargetBase):
                            programmer_type: str,
                            reset_target_after_programming: bool = True
                            ) -> None:
-        programming_target(self._scope, dot_hex_path, programmer_type, reset_target_after_programming)
+        programming_target(self._scope, dot_hex_path, programmer_type)
+        if reset_target_after_programming:
+            self.reset_via_VCC()
         pass
     pass
 
