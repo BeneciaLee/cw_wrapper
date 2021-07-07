@@ -4,6 +4,7 @@ from tqdm.autonotebook import tqdm
 from cw_wrapper import CWScope, SS1xTarget, make_random_hex
 
 # Connecting ChipWhisperer scope and target
+# test
 scope = CWScope()
 scope.connect(ss_version="1.1")
 
