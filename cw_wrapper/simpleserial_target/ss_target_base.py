@@ -12,6 +12,7 @@ class SSTargetBase:
         self.rx_history = list()
         self.tx_history = list()
         self.__history_size = 10
+        self._default_baud = 38400
         pass
 
     def print_simpleserial_commsnds(self) -> None:
@@ -89,7 +90,7 @@ class SSTargetBase:
                        ) -> None:
         assert 3.2e6 <= freq <= 25.0e6
         self._scope.clock.clkgen_freq = freq
-        self._target.baud = round(38400 * (freq / 7.37e6))
+        self._target.baud = round(self._default_baud * (freq / 7.37e6))
         self.reset_via_VCC(wait_for_ready=wait_for_ready)
         if verbose:
             print(f"Adjusted clock frequency: {int(self._scope.clock.clkgen_freq) * 1e-6:.4f}MHz")

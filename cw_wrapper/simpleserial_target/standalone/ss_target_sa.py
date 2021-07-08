@@ -13,7 +13,6 @@ class SSTargetStandAlone(SSTargetBase):
     def connect(self) -> None:
         self._scope = cw.scope(scope_type=cw.scopes.OpenADC)
         self._scope.default_setup()
-        self._target = cw.target(self._scope, target_type=cw.targets.SimpleSerial)
         pass
 
     def disconnect(self) -> None:
@@ -36,8 +35,16 @@ class SSTargetStandAlone(SSTargetBase):
 
 
 class SS1xTargetStandAlone(SSTargetStandAlone, SS1xTarget):
+    def connect(self) -> None:
+        super().connect()
+        self._target = cw.target(self._scope, target_type=cw.targets.SimpleSerial)
+        pass
     pass
 
 
 class SS2xTargetStandAlone(SSTargetStandAlone, SS2xTarget):
+    def connect(self) -> None:
+        super().connect()
+        self._target = cw.target(self._scope, target_type=cw.targets.SimpleSerial2)
+        pass
     pass
