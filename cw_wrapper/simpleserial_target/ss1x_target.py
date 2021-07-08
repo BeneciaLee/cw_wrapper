@@ -15,14 +15,14 @@ class SS1xTarget(SSTargetBase):
             print(f"[SS_ACK] Target did not ack.", file=sys.stderr)
             return False
         if ack_payload[0] != 'z' or not ack_payload.endswith("\n") or len(ack_payload) < 4:
-            print(f"[SS_ACK] Invalid ACK packet format detected. (received: " + ack_payload.replace("\n", "\\n") + ")",
-                  file=sys.stderr)
+            print(f"[SS_ACK] Invalid ACK packet format detected. "
+                  f"(received: " + ack_payload.replace("\n", "\\n") + ")", file=sys.stderr)
             return False
         try:
             ret = int(ack_payload[1:3], 16)
         except ValueError:
-            print(f"[SS_ACK] Invalid ACK packet format detected. (received: " + ack_payload.replace("\n", "\\n") + ")",
-                  file=sys.stderr)
+            print(f"[SS_ACK] Invalid ACK packet format detected. "
+                  f"(received: " + ack_payload.replace("\n", "\\n") + ")", file=sys.stderr)
             return False
         if ret != 0:
             print(f"[SS_ACK] The error code was passed through an ACK packet. (0x{ret:02X})", file=sys.stderr)
@@ -67,12 +67,12 @@ class SS1xTarget(SSTargetBase):
         if buf is None:
             return None
         if not buf.endswith("\n"):
-            print(f"[SS_READ] Invalid SimpleSerial response packet format detected. (received: " +
-                  buf.replace("\n", "\\n") + ")", file=sys.stderr)
+            print(f"[SS_READ] Invalid SimpleSerial response packet format detected. "
+                  f"(received: " + buf.replace("\n", "\\n") + ")", file=sys.stderr)
             return None
         if buf[0] != cmd:
-            print(f"[SS_READ] Unexpected response command detected. (expected: '{cmd}', received: '{buf[0]}')",
-                  file=sys.stderr)
+            print(f"[SS_READ] Unexpected response command detected. "
+                  f"(expected: '{cmd}', received: '{buf[0]}')", file=sys.stderr)
             return None
         try:
             for i in range(1, payload_len * 2 + 1, 2):

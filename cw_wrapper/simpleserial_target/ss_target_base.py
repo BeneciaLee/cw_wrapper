@@ -1,7 +1,6 @@
 import sys
 import time
 import chipwhisperer as cw
-import numpy as np
 from typing import Union, Optional
 from chipwhisperer.capture import scopes
 
@@ -123,12 +122,11 @@ class SSTargetBase:
         payload = self._target.read(payload_len, timeout)
         if payload == "":
             if print_warning_msg:
-                print("[RAW SERIAL] There is no data to receive from Target.", file=sys.stderr)
+                print("[RAW SERIAL READ] There is no data to receive from Target.", file=sys.stderr)
             return None
         if len(payload) < payload_len and print_warning_msg:
-            print(f"[RAW SERIAL] The data read from the target is less than expected. "
-                  f"(expected: {payload_len}, received: {len(payload)})",
-                  file=sys.stderr)
+            print(f"[RAW SERIAL READ] The data read from the target is less than expected. "
+                  f"(expected: {payload_len}, received: {len(payload)})", file=sys.stderr)
             self._update_rx_history(payload)
             return None
         self._update_rx_history(payload)

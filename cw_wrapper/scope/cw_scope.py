@@ -1,6 +1,5 @@
 import sys
 import time
-
 import chipwhisperer as cw
 import numpy as np
 from typing import Optional, Dict, Union
