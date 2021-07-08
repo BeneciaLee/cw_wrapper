@@ -34,16 +34,20 @@ class SS1xTarget(SSTargetBase):
                  payload_len: int,
                  payload: Optional[Union[bytearray, str, np.str_]],
                  following_ack: bool = True,
+                 variable_len_flag: bool = False,
                  timeout: int = 500
                  ) -> bool:
         assert len(cmd) == 1, "The length of 'cmd' must be 1."
+        assert 0 <= payload_len <= 64
         if payload is None:
             payload = bytearray()
         if type(payload) is not bytearray:
             payload = bytearray.fromhex(payload.strip())
-        cmd += binascii.hexlify(payload).decode().upper()
-        assert len(cmd) - 1 == payload_len * 2
-        cmd += "\n"
+        encoded_payload = binascii.hexlify(payload).decode().upper()
+        assert len(encoded_payload) == payload_len * 2
+        if variable_len_flag:
+            cmd += format(payload_len, "02X")
+        cmd += encoded_payload + "\n"
         if self._serial_raw_write(cmd) is False:
             return False
         if following_ack:

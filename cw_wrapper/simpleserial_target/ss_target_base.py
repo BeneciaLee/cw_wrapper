@@ -140,22 +140,11 @@ class SSTargetBase:
         raise NotImplementedError()
         pass
 
-    def ss_write(self,
-                 cmd: str,
-                 payload_len: int,
-                 payload: Optional[Union[bytearray, str, np.str_]],
-                 following_ack: bool = True,
-                 timeout: int = 500
-                 ):
-        raise NotImplementedError()
-        pass
+    # def ss_write(self, ... ) -> None:
+    #     raise NotImplementedError()
+    #     pass
 
-    def ss_read(self,
-                cmd: str,
-                payload_len: int,
-                following_ack: bool = True,
-                timeout: int = 500
-                ):
-        raise NotImplementedError()
-        pass
+    # def ss_read(self, ... ) -> bool:
+    #     raise NotImplementedError()
+    #     pass
     pass
