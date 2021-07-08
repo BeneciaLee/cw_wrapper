@@ -18,7 +18,7 @@ dut.print_simpleserial_commsnds()
 
 # Key setting
 fixed_key = "2AEF4FBF1020489FFD01F8369D353698"
-dut.ss_write("k", fixed_key, following_ack=True)
+dut.ss_write("k", 16, fixed_key, following_ack=True)
 
 # Initializing measurement parameters
 total_trace = 500
@@ -34,7 +34,7 @@ tqdm_progress = tqdm(range(total_trace))
 while cnt < total_trace:
     p = make_random_hex(16)
     scope.arm()
-    dut.ss_write('p', p, following_ack=False)
+    dut.ss_write('p', 16, p, following_ack=False)
     c = dut.ss_read('r', 16, following_ack=True)
     t = scope.get_waveform()
     if t is None or c is None:

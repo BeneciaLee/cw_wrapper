@@ -142,7 +142,8 @@ class SSTargetBase:
 
     def ss_write(self,
                  cmd: str,
-                 data: Optional[Union[bytearray, str, np.str_]],
+                 payload_len: int,
+                 payload: Optional[Union[bytearray, str, np.str_]],
                  following_ack: bool = True,
                  timeout: int = 500
                  ):
@@ -151,7 +152,7 @@ class SSTargetBase:
 
     def ss_read(self,
                 cmd: str,
-                length: int,
+                payload_len: int,
                 following_ack: bool = True,
                 timeout: int = 500
                 ):

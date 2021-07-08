@@ -31,16 +31,18 @@ class SS1xTarget(SSTargetBase):
 
     def ss_write(self,
                  cmd: str,
-                 data: Optional[Union[bytearray, str, np.str_]],
+                 payload_len: int,
+                 payload: Optional[Union[bytearray, str, np.str_]],
                  following_ack: bool = True,
                  timeout: int = 500
                  ) -> bool:
         assert len(cmd) == 1, "The length of 'cmd' must be 1."
-        if data is None:
-            data = bytearray()
-        if type(data) is not bytearray:
-            data = bytearray.fromhex(data.strip())
-        cmd += binascii.hexlify(data).decode().upper()
+        if payload is None:
+            payload = bytearray()
+        if type(payload) is not bytearray:
+            payload = bytearray.fromhex(payload.strip())
+        cmd += binascii.hexlify(payload).decode().upper()
+        assert len(cmd) - 1 == payload_len * 2
         cmd += "\n"
         if self._serial_raw_write(cmd) is False:
             return False
@@ -51,13 +53,13 @@ class SS1xTarget(SSTargetBase):
 
     def ss_read(self,
                 cmd: str,
-                length: int,
+                payload_len: int,
                 following_ack: bool = True,
                 timeout: int = 500
                 ) -> Optional[str]:
         assert len(cmd) == 1, "The length of 'cmd' must be 1."
-        assert 1 <= length <= 64
-        buf = self._serial_raw_read(length * 2 + 1 + 1)
+        assert 1 <= payload_len <= 64
+        buf = self._serial_raw_read(payload_len * 2 + 1 + 1)
         if buf is None:
             return None
         if not buf.endswith("\n"):
@@ -69,7 +71,7 @@ class SS1xTarget(SSTargetBase):
                   file=sys.stderr)
             return None
         try:
-            for i in range(1, length * 2 + 1, 2):
+            for i in range(1, payload_len * 2 + 1, 2):
                 _ = int(buf[i:i+2], 16)
         except ValueError:
             print(f"[SS_READ] Invalid hexadecimal str was detected in the SimpleSerial response packet.",
@@ -79,5 +81,5 @@ class SS1xTarget(SSTargetBase):
             if not self.ss_wait_ack(timeout):
                 print(f"[SS_READ] Response '{buf}' received. But target did not ack.", file=sys.stderr)
                 return None
-        return buf[1:2*length+1]
+        return buf[1:2 * payload_len + 1]
     pass
