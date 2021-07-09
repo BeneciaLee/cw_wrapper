@@ -96,8 +96,11 @@ class SSTargetBase:
             print(f"Adjusted clock frequency: {int(self._scope.clock.clkgen_freq) * 1e-6:.4f}MHz")
         pass
 
-    def flush_recv_buf(self):
+    def flush_recv_buf(self, verbose: bool = True):
+        in_wait_len = self._target.in_waiting()
         self._target.flush()
+        if verbose and in_wait_len > 0:
+            print(f"[FLUSH] Non-empty receive buffer was forcibly flushed. (length: {in_wait_len})", file=sys.stderr)
         pass
 
     def _serial_raw_write(self,
@@ -108,7 +111,11 @@ class SSTargetBase:
             data = data + "\n"
         try:
             if flush:
-                self.flush_recv_buf()
+                in_wait_len = self._target.in_waiting()
+                self.flush_recv_buf(verbose=False)
+                if in_wait_len > 0:
+                    print(f"[RAW SERIAL WRITE] Non-empty receive buffer was forcibly flushed. "
+                          f"(length: {in_wait_len})", file=sys.stderr)
             self._target.write(data)
         except:
             return False
