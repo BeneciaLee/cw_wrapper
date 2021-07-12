@@ -41,6 +41,8 @@ class SS1xTarget(SSTargetBase):
         assert 0 <= payload_len <= 64
         if payload is None:
             payload = bytearray()
+        if payload is list:
+            payload = bytearray(payload)
         if type(payload) is not bytearray:
             payload = bytearray.fromhex(payload.strip())
         encoded_payload = binascii.hexlify(payload).decode().upper()
